@@ -4,15 +4,13 @@
 
 **Your year in code, beautifully visualized.**
 
+Generate a personalized "Spotify Wrapped"-style summary of your Jules usage.
+
 <p>
   <strong>Credit:</strong> Built on top of
   <a href="https://github.com/moddi3/opencode-wrapped">opencode-wrapped</a>
   by moddi3 (<a href="https://x.com/moddi3io">@moddi3io</a>).
 </p>
-
-Generate a personalized "Spotify Wrapped"-style summary of your Jules usage.
-
-Inspired by <a href="https://github.com/numman-ali/cc-wrapped">cc-wrapped</a> and <a href="https://github.com/numman-ali/codex-wrapped">codex-wrapped</a> by <a href="https://x.com/nummanali">numman-ali</a>.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Bun](https://img.shields.io/badge/Bun-%23000000.svg?logo=bun&logoColor=white)](https://bun.sh)

@@ -2,8 +2,7 @@
   "name": "jules-wrapped",
   "version": "1.0.0",
   "author": {
-    "name": "Numman Ali",
-    "email": "numman.ali@gmail.com"
+    "name": "iHildy"
   },
   "description": "Generate a personalized Spotify Wrapped-style summary of your Jules usage",
   "homepage": "https://github.com/iHildy/jules-wrapped",
