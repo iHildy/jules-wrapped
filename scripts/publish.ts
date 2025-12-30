@@ -112,7 +112,7 @@ for (const [name] of Object.entries(binaries)) {
   } else if (await isPublished(name, version)) {
     console.log(`⏭️  Skipping ${name} (already published)`);
   } else {
-    await $`npm publish --access public --provenance`.cwd(targetPath);
+    await $`npm publish --access public`.cwd(targetPath);
     console.log(`✅ Published ${name}`);
   }
 }
@@ -127,7 +127,7 @@ if (dryRun) {
 } else if (await isPublished(pkg.name, version)) {
   console.log(`⏭️  Skipping ${pkg.name} (already published)`);
 } else {
-  await $`npm publish --access public --provenance`.cwd(mainPackagePath);
+  await $`npm publish --access public`.cwd(mainPackagePath);
   console.log(`✅ Published ${pkg.name}`);
 }
 
