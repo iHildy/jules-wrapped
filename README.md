@@ -59,13 +59,3 @@ bun run build  # Production build
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
-
----
-
-<div align="center">
-
-Built for the Jules community
-
-Credit: <a href="https://github.com/ryoppippi/ccusage">ccusage</a>
-
-</div>
