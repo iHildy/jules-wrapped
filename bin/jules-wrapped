@@ -95,6 +95,7 @@ function findBinary() {
   }
 
   // 2. Fallback to manual search (useful for some pnpm/npx edge cases)
+  // We search for node_modules in parents, and then look for the binary in siblings of 'jules-wrapped'
   let current = __dirname;
   for (;;) {
     const modules = join(current, "node_modules");
@@ -103,16 +104,20 @@ function findBinary() {
         const candidate = join(modules, name, "bin", binary);
         if (fs.existsSync(candidate)) return candidate;
       }
-      
-      // Also check siblings if we are inside a node_modules/jules-wrapped folder
-      if (current.endsWith("jules-wrapped")) {
-        for (const name of pkgNames) {
-          const candidate = join(dirname(current), name, "bin", binary);
-          if (fs.existsSync(candidate)) return candidate;
-        }
-      }
     }
     
+    // Specifically check sibling directories in node_modules
+    // If current is '.../node_modules/jules-wrapped/bin', then dirname(dirname(current)) is '.../node_modules'
+    if (current.includes("jules-wrapped")) {
+       const possibleNodeModules = current.split("jules-wrapped")[0];
+       if (possibleNodeModules.endsWith("node_modules/") || possibleNodeModules.endsWith("node_modules")) {
+          for (const name of pkgNames) {
+            const candidate = join(possibleNodeModules, name, "bin", binary);
+            if (fs.existsSync(candidate)) return candidate;
+          }
+       }
+    }
+
     const parent = dirname(current);
     if (parent === current) break;
     current = parent;

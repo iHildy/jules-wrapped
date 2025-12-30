@@ -1,6 +1,6 @@
 {
   "name": "jules-wrapped",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "author": {
     "name": "iHildy"
   },
@@ -34,6 +34,19 @@
   },
   "engines": {
     "node": ">=24.10.0"
+  },
+  "optionalDependencies": {
+    "jules-wrapped-darwin-arm64": "1.0.2",
+    "jules-wrapped-darwin-x64": "1.0.2",
+    "jules-wrapped-darwin-x64-baseline": "1.0.2",
+    "jules-wrapped-linux-arm64": "1.0.2",
+    "jules-wrapped-linux-arm64-musl": "1.0.2",
+    "jules-wrapped-linux-x64": "1.0.2",
+    "jules-wrapped-linux-x64-baseline": "1.0.2",
+    "jules-wrapped-linux-x64-baseline-musl": "1.0.2",
+    "jules-wrapped-linux-x64-musl": "1.0.2",
+    "jules-wrapped-windows-x64": "1.0.2",
+    "jules-wrapped-windows-x64-baseline": "1.0.2"
   },
   "dependencies": {
     "@clack/prompts": "^0.11.0",
