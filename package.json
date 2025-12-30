@@ -1,0 +1,53 @@
+{
+  "name": "jules-wrapped",
+  "version": "1.0.0",
+  "author": {
+    "name": "Numman Ali",
+    "email": "numman.ali@gmail.com"
+  },
+  "description": "Generate a personalized Spotify Wrapped-style summary of your Jules usage",
+  "homepage": "https://github.com/iHildy/jules-wrapped",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iHildy/jules-wrapped.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iHildy/jules-wrapped/issues"
+  },
+  "keywords": [
+    "jules",
+    "google",
+    "wrapped",
+    "jules-wrapped"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "jules-wrapped": "./bin/jules-wrapped"
+  },
+  "scripts": {
+    "start": "bun src/index.ts",
+    "dev": "bun run --watch src/index.ts",
+    "build": "tsgo --noEmit && bun run scripts/build.ts",
+    "publish": "bun run scripts/publish.ts",
+    "release": "semantic-release",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.11.0",
+    "@resvg/resvg-wasm": "^2.6.2",
+    "react": "^19.2.3",
+    "satori": "^0.18.3",
+    "xdg-basedir": "^5.1.0"
+  },
+  "devDependencies": {
+    "@semantic-release/exec": "^7.1.0",
+    "@semantic-release/git": "^10.0.1",
+    "@types/bun": "latest",
+    "@types/react": "^19.2.7",
+    "@typescript/native-preview": "^7.0.0-dev.20251223.1",
+    "bunup": "^0.16.10",
+    "semantic-release": "^25.0.2",
+    "typescript": "^5.0.0"
+  }
+}

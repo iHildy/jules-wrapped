@@ -1,0 +1,6 @@
+[tools]
+bun = "1.3.5"
+
+[env]
+_.file = '.env'
+NPM_TOKEN = { required = true }
