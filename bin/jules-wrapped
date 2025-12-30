@@ -5,9 +5,11 @@ import fs from "node:fs";
 import { dirname, join } from "node:path";
 import { platform as osPlatform, arch as osArch } from "node:os";
 import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const require = createRequire(import.meta.url);
 
 function run(target) {
   const result = spawnSync(target, process.argv.slice(2), {
@@ -21,6 +23,35 @@ function run(target) {
   process.exit(code);
 }
 
+/**
+ * Detect if the system uses musl libc
+ */
+function isMusl() {
+  if (osPlatform() !== "linux") return false;
+  try {
+    const lddOutput = spawnSync("ldd", ["--version"], { encoding: "utf8" }).stdout || "";
+    if (lddOutput.toLowerCase().includes("musl")) return true;
+    if (fs.readdirSync("/lib").some((f) => f.startsWith("ld-musl-"))) return true;
+  } catch (e) {}
+  return false;
+}
+
+/**
+ * Detect if the CPU supports AVX2 (simple check)
+ */
+function isAVX2() {
+  if (osArch() !== "x64") return true;
+  try {
+    if (osPlatform() === "linux") {
+      return fs.readFileSync("/proc/cpuinfo", "utf8").includes("avx2");
+    }
+    if (osPlatform() === "darwin") {
+      return spawnSync("sysctl", ["-n", "machdep.cpu.features"], { encoding: "utf8" }).stdout.includes("avx2");
+    }
+  } catch (e) {}
+  return true;
+}
+
 const platformMap = {
   darwin: "darwin",
   linux: "linux",
@@ -31,47 +62,69 @@ const archMap = {
   arm64: "arm64",
 };
 
-let platform = platformMap[osPlatform()];
-if (!platform) {
-  platform = osPlatform();
+let platform = platformMap[osPlatform()] || osPlatform();
+let arch = archMap[osArch()] || osArch();
+
+// Build priority list of package names
+const pkgNames = [];
+const parts = ["jules-wrapped", platform, arch];
+
+if (arch === "x64" && !isAVX2()) {
+  if (platform === "linux" && isMusl()) {
+    pkgNames.push(parts.join("-") + "-baseline-musl");
+  }
+  pkgNames.push(parts.join("-") + "-baseline");
 }
-let arch = archMap[osArch()];
-if (!arch) {
-  arch = osArch();
+
+if (platform === "linux" && isMusl()) {
+  pkgNames.push(parts.join("-") + "-musl");
 }
-const base = "jules-wrapped-" + platform + "-" + arch;
+
+pkgNames.push(parts.join("-"));
+
 const binary = platform === "windows" ? "jules-wrapped.exe" : "jules-wrapped";
 
-function findBinary(startDir) {
-  let current = startDir;
+function findBinary() {
+  // 1. Try require.resolve for each possible package
+  for (const name of pkgNames) {
+    try {
+      const pkgJson = require.resolve(`${name}/package.json`);
+      const binPath = join(dirname(pkgJson), "bin", binary);
+      if (fs.existsSync(binPath)) return binPath;
+    } catch (e) {}
+  }
+
+  // 2. Fallback to manual search (useful for some pnpm/npx edge cases)
+  let current = __dirname;
   for (;;) {
     const modules = join(current, "node_modules");
     if (fs.existsSync(modules)) {
-      const entries = fs.readdirSync(modules);
-      for (const entry of entries) {
-        if (!entry.startsWith(base)) {
-          continue;
-        }
-        const candidate = join(modules, entry, "bin", binary);
-        if (fs.existsSync(candidate)) {
-          return candidate;
+      for (const name of pkgNames) {
+        const candidate = join(modules, name, "bin", binary);
+        if (fs.existsSync(candidate)) return candidate;
+      }
+      
+      // Also check siblings if we are inside a node_modules/jules-wrapped folder
+      if (current.endsWith("jules-wrapped")) {
+        for (const name of pkgNames) {
+          const candidate = join(dirname(current), name, "bin", binary);
+          if (fs.existsSync(candidate)) return candidate;
         }
       }
     }
+    
     const parent = dirname(current);
-    if (parent === current) {
-      return;
-    }
+    if (parent === current) break;
     current = parent;
   }
 }
 
-const resolved = findBinary(__dirname);
+const resolved = findBinary();
 if (!resolved) {
   console.error(
-    'It seems that your package manager failed to install the right version of jules-wrapped CLI for your platform. You can try manually installing "' +
-      base +
-      '" package'
+    `Error: Could not find the native binary for your platform (${platform}-${arch}).\n` +
+    `Tried packages: ${pkgNames.join(", ")}\n` +
+    `Please try reinstalling the package or report an issue at https://github.com/iHildy/jules-wrapped/issues`
   );
   process.exit(1);
 }

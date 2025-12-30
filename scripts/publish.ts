@@ -67,7 +67,6 @@ console.log("\n📁 Preparing main package...");
 await $`mkdir -p ./dist/${targetpackageName}/bin`;
 await $`mkdir -p ./dist/${targetpackageName}/assets`;
 await $`cp -r ./bin ./dist/${targetpackageName}/`;
-await $`cp scripts/postinstall.mjs dist/${targetpackageName}/postinstall.mjs`;
 await $`cp README.md dist/${targetpackageName}/README.md`;
 await $`cp -r assets/images dist/${targetpackageName}/assets/`;
 
@@ -78,7 +77,6 @@ await Bun.file(`./dist/${targetpackageName}/package.json`).write(
       version,
       description: pkg.description,
       bin: { [targetpackageName]: `./bin/${targetpackageName}` },
-      scripts: { postinstall: "node ./postinstall.mjs" },
       optionalDependencies: binaries,
       repository: pkg.repository,
       homepage: pkg.homepage,
