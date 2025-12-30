@@ -8,18 +8,7 @@ export default {
     { name: "alpha", prerelease: true },
   ],
   plugins: [
-    [
-      "@semantic-release/commit-analyzer",
-      {
-        releaseRules: [
-          { type: "chore", release: "patch" },
-          { type: "refactor", release: "patch" },
-          { type: "style", release: "patch" },
-          { type: "build", release: "patch" },
-          { type: "ci", release: "patch" },
-        ],
-      },
-    ],
+    "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
     [
       "@semantic-release/exec",
