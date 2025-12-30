@@ -11,7 +11,7 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
-      id-token: write # Required for Trusted Publishing
+      id-token: write # Required for npm provenance (once trusted publishing is configured)
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,5 +26,5 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # NPM_TOKEN is NOT needed when using Trusted Publishing
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: bun run release
