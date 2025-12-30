@@ -32,6 +32,9 @@
     "release": "semantic-release",
     "clean": "rm -rf dist"
   },
+  "engines": {
+    "node": ">=24.10.0"
+  },
   "dependencies": {
     "@clack/prompts": "^0.11.0",
     "@resvg/resvg-wasm": "^2.6.2",
